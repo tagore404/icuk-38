@@ -1,6 +1,14 @@
-FROM frolvlad/alpine-oraclejdk8:slim
-VOLUME /tmp
-ADD target/oms-order-service-0.0.1-SNAPSHOT.jar oms-order.jar
-RUN sh -c 'touch /oms-order.jar'
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/oms-order.jar"]
+# Use modern lightweight Java 17 image
+FROM eclipse-temurin:17-jdk-alpine
+
+# Set work directory
+WORKDIR /app
+
+# Copy the jar into image
+COPY target/oms-order-service-0.0.1-SNAPSHOT.jar app.jar
+
+# Expose port
 EXPOSE 9093
+
+# Run the app
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
