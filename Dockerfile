@@ -1,3 +1,6 @@
-FROM openjdk:8
-ADD jarstaging/com/stalin/demo-workshop/2.0.2/demo-workshop-2.0.2.jar demo-workshop.jar
-ENTRYPOINT ["java", "-jar", "demo-workshop.jar"]
+FROM frolvlad/alpine-oraclejdk8:slim
+VOLUME /tmp
+ADD target/oms-order-service-0.0.1-SNAPSHOT.jar oms-order.jar
+RUN sh -c 'touch /oms-order.jar'
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/oms-order.jar"]
+EXPOSE 9093
