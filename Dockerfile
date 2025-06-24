@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the jar into image
 COPY target/oms-order-service-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose port
+# Expose port (your app listens on 9093)
 EXPOSE 9093
 
 # Run the app
