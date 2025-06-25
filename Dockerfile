@@ -3,19 +3,19 @@ FROM maven:3.9.6-eclipse-temurin-17 AS builder
 
 WORKDIR /app
 
-# Copy all project files to container
+# Copy the source code
 COPY . .
 
-# Build the project and skip tests
+# Build the JAR file
 RUN mvn clean package -DskipTests
 
 
-# ---------- Stage 2: Run the app ----------
+# ---------- Stage 2: Create runtime image ----------
 FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
 
-# Copy the JAR from the previous stage
+# Copy the built JAR from the builder stage
 COPY --from=builder /app/target/oms-order-service-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 9093
