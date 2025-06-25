@@ -1,10 +1,11 @@
-FROM eclipse-temurin:17-jdk-alpine
+# Use official Maven image with JDK 17
+FROM maven:3.9.6-eclipse-temurin-17 as build
 
+# Set working directory in the container
 WORKDIR /app
 
-# Adjust this path if needed (e.g., build/libs for Gradle)
-COPY target/oms-order-service-0.0.1-SNAPSHOT.jar app.jar
+# Copy source code to container
+COPY . .
 
-EXPOSE 9093
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Build the project and run tests (includes Sonar if configured in pom.xml)
+RUN mvn clean verify
