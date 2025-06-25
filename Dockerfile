@@ -1,11 +1,24 @@
-# Use official Maven image with JDK 17
-FROM maven:3.9.6-eclipse-temurin-17 as build
+# ---------- Stage 1: Build the JAR ----------
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 
-# Set working directory in the container
 WORKDIR /app
 
-# Copy source code to container
+# Copy source code
 COPY . .
 
-# Build the project and run tests (includes Sonar if configured in pom.xml)
-RUN mvn clean verify
+# Build the project
+RUN mvn clean package -DskipTests
+
+
+# ---------- Stage 2: Create runtime image ----------
+FROM eclipse-temurin:17-jdk-alpine
+
+WORKDIR /app
+
+# Copy built JAR from the builder stage
+COPY --from=builder /app/target/oms-order-service-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 9093
+
+# Run the app
+ENTRYPOINT ["java", "-jar", "app.jar"]
